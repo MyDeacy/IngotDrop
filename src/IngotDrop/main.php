@@ -11,34 +11,33 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\block\Block;
 use pocketmine\item\Item;
 
-class main extends PluginBase implements Listener{
+class main extends PluginBase{
 
 	public function onEnable(){
-		$this->getServer()->getPluginManager()->registerEvents($this, $this);
-	}
+		$this->getServer()->getPluginManager()->registerEvents($this, new Listener(){
+			public function onBreak(BlockBreakEvent $event){
+				$player = $event -> getPlayer();
+				if($player->getGamemode() === 0){
+					$block = $event->getBlock();
+					$id = $block->getId();
 
-	public function onBreak(BlockBreakEvent $event){
-		$player = $event -> getPlayer();
-		if($player->getGamemode() === 0){
-			$block = $event->getBlock();
-			$id = $block->getId();
+					switch($id){
+						case "15":
+							$item = array(Item::get(265, 0, 1));
+						break;
 
-			switch($id){
-				case "15":
-					$item = array(Item::get(265, 0, 1));
-				break;
-				
-				case "14":
-					$item = array(Item::get(266, 0, 1));
-				break;
+						case "14":
+							$item = array(Item::get(266, 0, 1));
+						break;
 
-				default:
+						default:
 
-				return true;
+						return true;
+					}
+
+					$event->setDrops($item);
+				}	
 			}
-			
-			$event->setDrops($item);
-		}	
+		});
 	}
-
 }
